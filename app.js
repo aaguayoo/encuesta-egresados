@@ -1,7 +1,3 @@
-import streamlit as st
-import streamlit.components.v1 as components
-
-my_js = """ 
 // collect DOMs
 const display = document.querySelector('.display')
 const controllerWrapper = document.querySelector('.controllers')
@@ -109,7 +105,7 @@ const application = (index) => {
             clearDisplay()
     
             addAudio()
-            addButton('download', 'downloadAudio()', 'Download Audio')
+            addButton('download', 'downloadAudio()', 'Dwnload Audio')
             addButton('record', 'record()', 'Record Again')
             break
         
@@ -124,12 +120,3 @@ const application = (index) => {
 }
 
 application(stateIndex)
-"""
-
-# Wrapt the javascript as html code
-my_html = f"<head><meta charset='UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><link rel='stylesheet' href='./styles.css'/><title>Audio recorder</title></head><body><dim class='container'><div class='display'></div><div class='controllers'></div></div></body><script>{my_js}</script>"
-
-# Execute your app
-st.title("Javascript example")
-with st.sidebar:
-    components.html(my_html)
