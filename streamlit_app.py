@@ -1,12 +1,38 @@
 import streamlit as st
 import numpy as np
+from bokeh.models.widgets import Button
+from bokeh.models import CustomJS
+from streamlit_bokeh_events import streamlit_bokeh_events
 
-st.title("Encuesta egresados")
-st.header("Esto es un encabezado")
+stt_button = Button(label="Speak", width=500)
 
-with st.form("Años empleo"):
-    years = list(np.linspace(2000,2022,1))
-    col1, col2 = st.columns(2)
-    start = col1.selectbox("",years)
-    end = col2.selectbox("",years)
-    st.form_submit_button()
+stt_button.js_on_event("button_click", CustomJS(code="""
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = function (e) {
+        var value = "";
+        for (var i = e.resultIndex; i < e.results.length; ++i) {
+            if (e.results[i].isFinal) {
+                value += e.results[i][0].transcript;
+            }
+        }
+        if ( value != "") {
+            document.dispatchEvent(new CustomEvent("GET_TEXT", {detail: value}));
+        }
+    }
+    recognition.start();
+    """))
+
+result = streamlit_bokeh_events(
+    stt_button,
+    events="GET_TEXT",
+    key="listen",
+    refresh_on_update=True,
+    override_height=45,
+    debounce_time=0)
+
+if result:
+    if "GET_TEXT" in result:
+        st.write(result.get("GET_TEXT"))
