@@ -9,3 +9,4 @@ with st.form("Años empleo"):
     col1, col2 = st.columns(2)
     start = col1.selectbox("",years)
     end = col2.selectbox("",years)
+    st.form_submit_button()
